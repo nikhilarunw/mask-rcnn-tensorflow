@@ -46,7 +46,6 @@ RUN pip install --ignore-installed -e  /opt/ml/code/mask-rcnn-tensorflow
 
 RUN pip install mpi4py
 RUN pip install numba
-RUN pip install horovod
 
 COPY train /opt/ml/input/data/train/
 
