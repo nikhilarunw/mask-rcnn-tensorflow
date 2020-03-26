@@ -41,11 +41,63 @@ output_path = s3_output_location
 #                                directory_path='/fsx',
 #                                file_system_access_mode='ro')
 
-hyperparams = {"sagemaker_use_mpi": "True",
-               "sagemaker_process_slots_per_host": num_gpus,
-               "num_gpus":num_gpus,
-               "num_nodes": num_nodes,
-               "custom_mpi_cmds": custom_mpi_cmds}
+hyperparams = {
+    "sagemaker_use_mpi": "False",
+    "sagemaker_process_slots_per_host": num_gpus,
+    "num_gpus":num_gpus,
+    "num_nodes": num_nodes,
+    "custom_mpi_cmds": custom_mpi_cmds,
+    "mode_fpn": "True",
+    "mode_mask": "True",
+    "eval_period": 1,
+    "batch_norm": "FreezeBN"
+}
+
+metric_definitions=[      
+            {
+            "Name": "maskrcnn_loss/accuracy",
+            "Regex": ".*maskrcnn_loss/accuracy:\\s*(\\S+).*"
+        },
+        {
+            "Name": "maskrcnn_loss/fg_pixel_ratio",
+            "Regex": ".*maskrcnn_loss/fg_pixel_ratio:\\s*(\\S+).*"
+        },
+        {
+            "Name": "maskrcnn_loss/maskrcnn_loss",
+            "Regex": ".*maskrcnn_loss/maskrcnn_loss:\\s*(\\S+).*"
+        },
+        {
+            "Name": "maskrcnn_loss/pos_accuracy",
+            "Regex": ".*maskrcnn_loss/pos_accuracy:\\s*(\\S+).*"
+        },
+        {
+            "Name": "mAP(bbox)/IoU=0.5",
+            "Regex": ".*mAP\\(bbox\\)/IoU=0\\.5:\\s*(\\S+).*"
+        },
+        {
+            "Name": "mAP(bbox)/IoU=0.5:0.95",
+            "Regex": ".*mAP\\(bbox\\)/IoU=0\\.5:0\\.95:\\s*(\\S+).*"
+        },
+        {
+            "Name": "mAP(bbox)/IoU=0.75",
+            "Regex": ".*mAP\\(bbox\\)/IoU=0\\.75:\\s*(\\S+).*"
+        },
+        {
+            "Name": "mAP(bbox)/large",
+            "Regex": ".*mAP\\(bbox\\)/large:\\s*(\\S+).*"
+        },
+        {
+            "Name": "mAP(bbox)/medium",
+            "Regex": ".*mAP\\(bbox\\)/medium:\\s*(\\S+).*"
+        },
+        {
+            "Name": "mAP(bbox)/small",
+            "Regex": ".*mAP\\(bbox\\)/small:\\s*(\\S+).*"
+        }
+            
+        
+]
+               
 
 estimator = Estimator(image_name, role=sagemaker_iam_role, output_path=output_path,
                       train_instance_count=num_nodes,

@@ -210,6 +210,7 @@ class Trainer(object):
         logger.info("Setup callbacks graph ...")
         self._callbacks = Callbacks(self._callbacks)
         self._callbacks.setup_graph(weakref.proxy(self))
+        logger.info("Setup callbacks graph done")
 
     @call_only_once
     def initialize(self, session_creator, session_init):
@@ -312,7 +313,7 @@ class Trainer(object):
 
         You can call those methods by yourself to have better control on details if needed.
         """
-        self.setup_callbacks(callbacks, monitors)
+        #self.setup_callbacks(callbacks, monitors)
         self.initialize(session_creator, session_init)
         self.main_loop(steps_per_epoch, starting_epoch, max_epoch)
 
