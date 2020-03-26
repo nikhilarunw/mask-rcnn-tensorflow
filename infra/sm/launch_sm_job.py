@@ -42,7 +42,7 @@ output_path = s3_output_location
 #                                file_system_access_mode='ro')
 
 hyperparams = {
-    "sagemaker_use_mpi": "False",
+    "sagemaker_use_mpi": "True",
     "sagemaker_process_slots_per_host": num_gpus,
     "num_gpus":num_gpus,
     "num_nodes": num_nodes,

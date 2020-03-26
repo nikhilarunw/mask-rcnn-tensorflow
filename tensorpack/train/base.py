@@ -23,7 +23,6 @@ from .config import DEFAULT_CALLBACKS, DEFAULT_MONITORS, TrainConfig
 
 __all__ = ['StopTraining', 'Trainer']
 
-tf.debugging.set_log_device_placement(True)
 
 class StopTraining(Exception):
     """
