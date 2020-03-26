@@ -313,7 +313,7 @@ class Trainer(object):
 
         You can call those methods by yourself to have better control on details if needed.
         """
-        #self.setup_callbacks(callbacks, monitors)
+        self.setup_callbacks(callbacks, monitors)
         self.initialize(session_creator, session_init)
         self.main_loop(steps_per_epoch, starting_epoch, max_epoch)
 

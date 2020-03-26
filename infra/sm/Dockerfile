@@ -40,12 +40,15 @@ RUN git clone https://github.com/NVIDIA/cocoapi && \
     cd cocoapi/PythonAPI && \
     make install
 
-RUN pip install mpi4py
-RUN pip install numba
 
 RUN git clone https://github.com/nikhilarunw/mask-rcnn-tensorflow /opt/ml/code/mask-rcnn-tensorflow
 RUN chmod -R +w  /opt/ml/code/mask-rcnn-tensorflow
 RUN pip install --ignore-installed -e  /opt/ml/code/mask-rcnn-tensorflow
+
+
+RUN pip install mpi4py
+RUN pip install numba
+
 
 COPY train /opt/ml/input/data/train/
 

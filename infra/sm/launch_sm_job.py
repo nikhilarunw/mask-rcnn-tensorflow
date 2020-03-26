@@ -29,7 +29,7 @@ image_name=f"{account}.dkr.ecr.{region}.amazonaws.com/{image}"
 sagemaker_iam_role = str(sys.argv[2])
 num_gpus = 1
 num_nodes = 1
-instance_type = 'ml.p2.xlarge'
+instance_type = 'ml.p3.2xlarge'
 custom_mpi_cmds = []
 
 job_name = "maskrcnn-{}x{}-{}".format(num_nodes, num_gpus, image)
