@@ -3,7 +3,7 @@ cd /opt/ml/code/mask-rcnn-tensorflow
 BATCH_SIZE_PER_GPU=4
 THROUGHPUT_LOG_FREQ=2000
 echo "Launch training job...."
-/usr/local/bin/python3 MaskRCNN/train.py \
+/usr/bin/python3 MaskRCNN/train.py \
 	--logdir /logs/train_log \
 	--fp16 \
 	--throughput_log_freq ${THROUGHPUT_LOG_FREQ} \

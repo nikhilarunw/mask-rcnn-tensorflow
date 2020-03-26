@@ -14,23 +14,32 @@ def get_str(cmd):
 
 account = get_str("echo $(aws sts get-caller-identity --query Account --output text)")
 region = get_str("echo $(aws configure get region)")
+
+s3_bucket  =   'smart-invoice'
+prefix = "train" 
+s3train = f's3://{s3_bucket}/{prefix}'
+train = sage.session.s3_input(s3train, distribution='FullyReplicated', 
+                        content_type='application/tfrecord', s3_data_type='S3Prefix')
+s3_output_location = f's3://{s3_bucket}/{prefix}/sagemaker_training_release'
+data_channels = {'train': train}
+
 image = str(sys.argv[1])
 sess = sage.Session()
 image_name=f"{account}.dkr.ecr.{region}.amazonaws.com/{image}"
 sagemaker_iam_role = str(sys.argv[2])
-num_gpus = 8
-num_nodes = 4
-instance_type = 'ml.p3.16xlarge'
+num_gpus = 1
+num_nodes = 1
+instance_type = 'ml.p2.xlarge'
 custom_mpi_cmds = []
 
 job_name = "maskrcnn-{}x{}-{}".format(num_nodes, num_gpus, image)
 
-output_path = 's3://mrcnn-sagemaker/sagemaker_training_release'
+output_path = s3_output_location
 
-lustre_input = FileSystemInput(file_system_id='fs-03f556d03c3c590a2',
-                               file_system_type='FSxLustre',
-                               directory_path='/fsx',
-                               file_system_access_mode='ro')
+# lustre_input = FileSystemInput(file_system_id='fs-03f556d03c3c590a2',
+#                                file_system_type='FSxLustre',
+#                                directory_path='/fsx',
+#                                file_system_access_mode='ro')
 
 hyperparams = {"sagemaker_use_mpi": "True",
                "sagemaker_process_slots_per_host": num_gpus,
@@ -43,9 +52,7 @@ estimator = Estimator(image_name, role=sagemaker_iam_role, output_path=output_pa
                       train_instance_type=instance_type,
                       sagemaker_session=sess,
                       train_volume_size=200,
-                      base_job_name=job_name,
-                      subnets=['subnet-21ac2f2e'],
-                      security_group_ids=['sg-a21b02eb'],
+                      base_job_name=job_name,                      
                       hyperparameters=hyperparams)
 
-estimator.fit({'train':lustre_input}, wait=False)
+estimator.fit(inputs=data_channels, logs=True)
