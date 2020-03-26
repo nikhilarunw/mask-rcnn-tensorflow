@@ -53,7 +53,7 @@ os.environ['TF_ENABLE_COND_V2'] = '1'
 try:
     import tensorflow as tf  # noqa
     _version = tf.__version__.split('.')
-    assert int(_version[0]) >= 2, "TF>=2 is required!"
+    assert int(_version[0]) >= 1 and int(_version[1]) >= 3, "TF>=1.3 is required!"
     _HAS_TF = True
 except ImportError:
     print("Failed to import tensorflow.")
