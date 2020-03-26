@@ -22,11 +22,11 @@ __all__ = ['COCODetection', 'DetectionDataset']
 class COCODetection(object):
     # handle the weird (but standard) split of train and val
     _INSTANCE_TO_BASEDIR = {
-        'valminusminival2014': 'val2014',
-        'minival2014': 'val2014',
+        'valminusminival2014': 'Val_images',
+        'minival2014': 'Val_images',
     }
 
-    COCO_id_to_category_id = {1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9, 10: 10, 11: 11, 13: 12, 14: 13, 15: 14, 16: 15, 17: 16, 18: 17, 19: 18, 20: 19, 21: 20, 22: 21, 23: 22, 24: 23, 25: 24, 27: 25, 28: 26, 31: 27, 32: 28, 33: 29, 34: 30, 35: 31, 36: 32, 37: 33, 38: 34, 39: 35, 40: 36, 41: 37, 42: 38, 43: 39, 44: 40, 46: 41, 47: 42, 48: 43, 49: 44, 50: 45, 51: 46, 52: 47, 53: 48, 54: 49, 55: 50, 56: 51, 57: 52, 58: 53, 59: 54, 60: 55, 61: 56, 62: 57, 63: 58, 64: 59, 65: 60, 67: 61, 70: 62, 72: 63, 73: 64, 74: 65, 75: 66, 76: 67, 77: 68, 78: 69, 79: 70, 80: 71, 81: 72, 82: 73, 84: 74, 85: 75, 86: 76, 87: 77, 88: 78, 89: 79, 90: 80}  # noqa
+    COCO_id_to_category_id = {1: 1, 2:2}  # noqa
     """
     Mapping from the incontinuous COCO category id to an id in [1, #category]
     For your own dataset, this should usually be an identity mapping.
@@ -34,7 +34,7 @@ class COCODetection(object):
 
     # 80 names for COCO
     class_names = [
-        "person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella", "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball", "kite", "baseball bat", "baseball glove", "skateboard", "surfboard", "tennis racket", "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple", "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake", "chair", "couch", "potted plant", "bed", "dining table", "toilet", "tv", "laptop", "mouse", "remote", "keyboard", "cell phone", "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors", "teddy bear", "hair drier", "toothbrush"]  # noqa
+        "invoice_no_key_pair", "invoice_no_value" ]  # noqa
 
     def __init__(self, basedir, name):
         self.name = name
@@ -85,7 +85,6 @@ class COCODetection(object):
         Args:
             add_gt: whether to add ground truth bounding box annotations to the dicts
             add_mask: whether to also add ground truth mask
-
         Returns:
             a list of dict, each has keys including:
                 'height', 'width', 'id', 'file_name',
@@ -177,7 +176,6 @@ class COCODetection(object):
     def load_many(basedir, names, add_gt=True, add_mask=False):
         """
         Load and merges several instance files together.
-
         Returns the same format as :meth:`COCODetection.load`.
         """
         if not isinstance(names, (list, tuple)):
@@ -192,7 +190,6 @@ class COCODetection(object):
 class DetectionDataset(object):
     """
     A singleton to load datasets, evaluate results, and provide metadata.
-
     To use your own dataset that's not in COCO format, rewrite all methods of this class.
     """
     def __init__(self):
@@ -208,13 +205,10 @@ class DetectionDataset(object):
         """
         Args:
             names (list[str]): name of the training datasets, e.g.  ['train2014', 'valminusminival2014']
-
         Returns:
             roidbs (list[dict]):
-
         Produce "roidbs" as a list of dict, each dict corresponds to one image with k>=0 instances.
         and the following keys are expected for training:
-
         height, width: integer
         file_name: str, full path to the image
         boxes: numpy array of kx4 floats, each row is [x1, y1, x2, y2]
@@ -224,10 +218,8 @@ class DetectionDataset(object):
             Each list of numpy arrays corresponds to the mask for one instance.
             Each numpy array in the list is a polygon of shape Nx2,
             because one mask can be represented by N polygons.
-
             If your segmentation annotations are originally masks rather than polygons,
             either convert it, or the augmentation will need to be changed or skipped accordingly.
-
             Include this field only if training Mask R-CNN.
         """
         return COCODetection.load_many(
@@ -237,13 +229,10 @@ class DetectionDataset(object):
         """
         Args:
             name (str): name of one inference dataset, e.g. 'minival2014'
-
         Returns:
             roidbs (list[dict]):
-
             Each dict corresponds to one image to run inference on. The
             following keys in the dict are expected:
-
             file_name (str): full path to the image
             id (str): an id for the image. The inference results will be stored with this id.
         """
@@ -253,13 +242,10 @@ class DetectionDataset(object):
         """
         Args:
             name (str): name of one inference dataset, e.g. 'minival2014'
-
         Returns:
             roidbs (list[dict]):
-
             Each dict corresponds to one image to run inference on. The
             following keys in the dict are expected:
-
             file_name (str): full path to the image
             id (str): an id for the image. The inference results will be stored with this id.
         """
@@ -270,16 +256,13 @@ class DetectionDataset(object):
         Args:
             results (list[dict]): the inference results as dicts.
                 Each dict corresponds to one __instance__. It contains the following keys:
-
                 image_id (str): the id that matches `load_inference_roidbs`.
                 category_id (int): the category prediction, in range [1, #category]
                 bbox (list[float]): x1, y1, x2, y2
                 score (float):
                 segmentation: the segmentation mask in COCO's rle format.
-
             dataset (str): the name of the dataset to evaluate.
             output (str): the output file to optionally save the results to.
-
         Returns:
             dict: the evaluation results.
         """
@@ -334,6 +317,6 @@ class DetectionDataset(object):
 
 
 if __name__ == '__main__':
-    c = COCODetection(cfg.DATA.BASEDIR, 'train2014')
+    c = COCODetection(cfg.DATA.BASEDIR, 'Train_images')
     gt_boxes = c.load(add_gt=True, add_mask=True)
     print("#Images:", len(gt_boxes))
